@@ -9,14 +9,20 @@
 </head>
 
 <body>
+
+
     <div>
         <h1>Register</h1>
-        <form action="registration.php" method="post">
-            <label for="firstName">First Name</label>
-            <input type="text" name="firstName" id="firstName">
+        <form method="post" action="index.php">
+            <label for="fullName">Full Name</label>
+            <input type="text" name="fullName" id="fullName">
             <br>
-            <label for="lastName">Last Name</label>
-            <input type="text" name="lastName" id="lastName">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username">
+            <br>
+            <label for="gender">Gender</label>
+            <input type="radio" name="gender" id="gender" value="Male">Male
+            <input type="radio" name="gender" id="gender" value="Female">Female
             <br>
             <label for="phoneNumber">Mobile</label>
             <input type="number" name="phoneNumber" id="phoneNumber">
@@ -28,9 +34,9 @@
             <input type="password" name="password" id="password">
             <br>
             <label for="passwordConfirm">Confirm Password</label>
-            <input type="passwordConfirm" name="passwordConfirm" id="passwordConfirm">
+            <input type="password" name="passwordConfirm" id="passwordConfirm">
             <br>
-            <input type="submit" namer="register" value="Register">
+            <input type="submit" name="submit" value="Register">
         </form>
     </div>
 </body>
