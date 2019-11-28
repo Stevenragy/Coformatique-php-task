@@ -9,20 +9,29 @@
 </head>
 
 <body>
-
+    <?php
+    $error_array = array();
+    if (isset($_GET['errors'])) {
+        $error_array = explode(",", $_GET['errors']);
+        echo var_dump($error_array);
+    }
+    ?>
 
     <div>
         <h1>Register</h1>
-        <form method="post" action="index.php">
+        <form method="post" action="process.php">
             <label for="fullName">Full Name</label>
-            <input type="text" name="fullName" id="fullName">
-            <br>
+            <input type="text" name="fullName" id="fullName" placeholder="" />
+            <?php if (in_array("fullName", $error_array)) echo "<span style='color:red;'>Please enter your full name.</span>" ?>
+            <br />
             <label for="username">Username</label>
             <input type="text" name="username" id="username">
+            <?php if (in_array("fullName", $error_array)) echo "<span style='color:red;'>Please enter your full name.</span>" ?>
+
             <br>
-            <label for="gender">Gender</label>
-            <input type="radio" name="gender" id="gender" value="Male">Male
-            <input type="radio" name="gender" id="gender" value="Female">Female
+            <label for="radio">Gender</label>
+            <input type="radio" name="radio" id="radio" value="Male">Male
+            <input type="radio" name="radio" id="radio" value="Female">Female
             <br>
             <label for="phoneNumber">Mobile</label>
             <input type="number" name="phoneNumber" id="phoneNumber">
