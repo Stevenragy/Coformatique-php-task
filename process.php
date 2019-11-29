@@ -28,35 +28,36 @@ if (isset($_POST['submit'])) {
     if ($errors) {
         header("Location: registration.php?errors=" . implode(',', $errors));
     }
+
+
+
+
+    @$conn = mysqli_connect("localhost", "root", "", "coform");
+
+    if (!$conn) {
+        echo mysqli_connect_error();
+        exit;
+    }
+
+    @$fullName = mysqli_escape_string($conn, $_POST['fullName']);
+    @$username = mysqli_escape_string($conn, $_POST['username']);
+    @$email = mysqli_escape_string($conn, $_POST['email']);
+    @$gender = $_POST['radio'];
+    @$password = password_hash(mysqli_escape_string($conn, $_POST['password']), PASSWORD_DEFAULT);
+    @$phoneNumber = mysqli_escape_string($conn, $_POST['phoneNumber']);
+    if (!(empty($fullName . $username . $email . $gender . $password . $phoneNumber))) {
+        $query = "INSERT INTO `users` (`full_name`, `username`, `gender`, `mobile`, `email`, `password`) VALUES ('$fullName', '$username', '$gender', '$phoneNumber', '$email', '$password')";
+    } else {
+        exit;
+    }
+
+
+    if (mysqli_query($conn, $query)) {
+        echo "You have been registered successfully";
+    } else {
+        echo "sss";
+        mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
 }
-
-
-
-@$conn = mysqli_connect("localhost", "root", "", "coform");
-
-if (!$conn) {
-    echo mysqli_connect_error();
-    exit;
-}
-
-@$fullName = mysqli_escape_string($conn, $_POST['fullName']);
-@$username = mysqli_escape_string($conn, $_POST['username']);
-@$email = mysqli_escape_string($conn, $_POST['email']);
-@$gender = $_POST['radio'];
-@$password = mysqli_escape_string($conn, $_POST['password']);
-@$phoneNumber = mysqli_escape_string($conn, $_POST['phoneNumber']);
-if (!(empty($fullName . $username . $email . $gender . $password . $phoneNumber))) {
-    $query = "INSERT INTO `users` (`full_name`, `username`, `gender`, `mobile`, `email`, `password`) VALUES ('" . $fullName . "', '" . $username . "', '" . $gender . "', '" . $phoneNumber . "', '" . $email . "', '" . $password . "')";
-} else {
-    exit;
-}
-
-
-if (mysqli_query($conn, $query)) {
-    echo "You have been registered successfully";
-} else {
-    echo "sss";
-    mysqli_error($conn);
-}
-
-mysqli_close($conn);
