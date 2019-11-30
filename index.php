@@ -3,6 +3,23 @@
 if (!(isset($_SESSION['email']) && isset($_SESSION['id']))) {
     header("Location: login.php");
 }
+if (isset($_POST['update'])) {
+    $conn = mysqli_connect("localhost", "root", "", "coform");
+    if (!$conn) {
+        echo mysqli_connect_error(); //for debugging
+        exit;
+    }
+    $text = mysqli_escape_string($conn, $_POST['textArea']);
+    $queryUpdate = mysqli_query($conn, "UPDATE `message` SET `message`=' $text' WHERE 
+        id = '" . $_POST['idHid'] . "'");
+} else if (isset($_POST['delete'])) {
+    $conn = mysqli_connect("localhost", "root", "", "coform");
+    if (!$conn) {
+        echo mysqli_connect_error(); //for debugging
+        exit;
+    }
+    $queryUpdate = mysqli_query($conn, "DELETE FROM `message` WHERE id='" . $_POST['idHid1'] . "'");
+}
 $messageDisplay = "";
 $error = "";
 if (isset($_POST['addMessage'])) {
@@ -41,12 +58,12 @@ require('header.php');
     <br>
     <div class="row justify-content-start">
         <div class="col-md-6">
-            <h1> Hello <?php echo $_SESSION['full_name']; ?></h1>
+            <h2> Hello <?php echo $_SESSION['full_name']; ?></h2>
         </div>
 
     </div>
     <div class="row justify-content-start">
-        <div class="col-md-6">
+        <div class="col-lg-12">
             <p>
                 <?php if (isset($_POST)) {
                     if ($messageDisplay != "")
@@ -71,58 +88,91 @@ require('header.php');
         </div>
     </div>
     <br>
+
     <div class="row justify-content-start">
         <div class="col-lg-12">
             <div class="row justify-content-center userMessages">
-                <div class="message shadow p-3 mb-5 bg-white rounded col-lg-5 m-3">
-                    <div class="user"><small class="time text-muted">2019-11-30</small></div>
-                    <div class="userMessage">Here is some message for my web page messages i try it for now
-                    </div>
-                    <div class="border-bottom">
-                        <a class="text-secondary"><button style="border:none;">Update</button></a>
-                        <a class="text-secondary"><button style="border:none;">Delete</button></a>
-                    </div>
-                    <div class="replies m-3">
-                        <div class="userMessage">Here is some message for my web page messages i try it for now </div>
-                        <small class="time text-muted">2019-11-30</small>
-                        <a class="text-secondary" data-toggle="collapse" href="#txtArea2" role="button" aria-expanded="false" aria-controls="txtArea2">Add reply</a>
-                        <div class="collapse" id="txtArea2">
-                            <div class="card card-body">
-                                <div class="form-group purple-border">
-                                    <label for="exampleFormControlTextarea4">Type Here</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
-                                </div>
-                                <button class="btn btn-primary">Add</button>
+                <?php
+                if ($_SESSION['id']) {
+                    $conn = mysqli_connect("localhost", "root", "", "coform");
+                    if (!$conn) {
+                        echo mysqli_connect_error(); //for debugging
+                        exit;
+                    }
+                    $query = mysqli_query($conn, "SELECT * FROM `message` WHERE user_id = '" . $_SESSION['id'] . "'");
+                    if (mysqli_num_rows($query) > 0) {
+                        while ($data = mysqli_fetch_assoc($query)) {
+                            echo '
+            <div class="message shadow p-3 mb-5 bg-white rounded col-lg-6 m-3">
+                <div class="user"><small class="time text-muted">' . $data['createdOn'] . '</small></div>
+                <div class="userMessage">' . $data['message'] . '
+                </div>
+                <div class="border-bottom">
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#messageUpdate' . $data['id'] . '">
+                        Update
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="messageUpdate' . $data['id'] . '" tabindex="-1" role="dialog" aria-labelledby="messageUpdateLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="messageUpdateLabel">Update</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <input type="hidden" name="idHid" id="idHid" value="' . $data['id'] . '" />
+                                    <div class="modal-body">
+                                        <textarea class="form-control" id="textArea" name="textArea" rows="3">' . $data['message'] . '</textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button tybe="submit" class="btn btn-primary" name="update" id="update">Save changes</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                    <div >
+                        <form method="post">
+                        <input type="hidden" name="idHid1" id="idHid1" value="' . $data['id'] . '" />
+
+                        <button type="submit" id="delete" name="delete" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="message shadow p-3 mb-5 bg-white rounded col-lg-5 m-3">
-                    <div class="user"><small class="time text-muted">2019-11-30</small></div>
-                    <div class="userMessage">Here is some message for my web page messages i try it for now
-                    </div>
-                    <div class="border-bottom">
-                        <a class="text-secondary"><button style="border:none;">Update</button></a>
-                        <a class="text-secondary"><button style="border:none;">Delete</button></a>
-                    </div>
-                    <div class="replies m-3">
-                        <div class="userMessage">Here is some message for my web page messages i try it for now </div>
-                        <small class="time text-muted">2019-11-30</small>
-                        <a class="text-secondary" data-toggle="collapse" href="#txtArea2" role="button" aria-expanded="false" aria-controls="txtArea2">Add reply</a>
-                        <div class="collapse" id="txtArea2">
-                            <div class="card card-body">
-                                <div class="form-group purple-border">
-                                    <label for="exampleFormControlTextarea4">Type Here</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
-                                </div>
-                                <button class="btn btn-primary">Add</button>
+                <div class="replies m-3">
+                    <div class="userMessage">Here is some message for my web page messages i try it for now </div>
+                    <small class="time text-muted">2019-11-30</small>
+                    <a class="text-secondary" data-toggle="collapse" href="#txtArea' . $data['id'] . '" role="button" aria-expanded="false" aria-controls="txtArea' . $data['id'] . '">Add reply</a>
+                    <div class="collapse" id="txtArea' . $data['id'] . '">
+                        <div class="card card-body">
+                            <div class="form-group purple-border">
+                                <label for="replyTextarea' . $data['id'] . '">Type Here</label>
+                                <textarea class="form-control" id="replyTextarea' . $data['id'] . '" rows="3" value=""></textarea>
                             </div>
+                            <button class="btn btn-primary">Add</button>
                         </div>
                     </div>
                 </div>
+            </div>';
+                        }
+                    } else {
+                        echo "nothing to show";
+                    }
+                }
+                ?>
+
             </div>
         </div>
     </div>
 </div>
+<script>
+    function ContentPage(elem) {
+        location.href = "index.php" + "?id=" + elem;
+    };
+</script>
 
 <?php require('footer.php') ?>
