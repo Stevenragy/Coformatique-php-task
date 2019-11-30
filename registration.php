@@ -64,6 +64,7 @@ if (isset($_GET)) {
 
                 <input class="btn btn-primary col-sm-12 col-md-3 col-lg-2" type="submit" name="submit" value="Register">
             </form>
+            <a href="login.php">Have an account?</a>
         </div>
     </div>
 </div>
