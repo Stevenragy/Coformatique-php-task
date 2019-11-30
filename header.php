@@ -12,7 +12,12 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="#">
-            <img src="/docs/4.4/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="">
             Coformatique
         </a>
+        <?php
+        if (isset($_SESSION['id'])) {
+            echo '<a class="btn btn-warning" href="logout.php">logout</a>';
+        }
+        ?>
+
     </nav>

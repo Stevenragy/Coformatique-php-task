@@ -61,6 +61,7 @@ if (isset($_POST['submit'])) {
             $data = mysqli_fetch_array($result);
             $_SESSION['id'] = $data['id'];
             $_SESSION['email'] = $data['email'];
+            $_SESSION['full_name'] = $data['full_name'];
             $message = "You have been registered successfully";
 
             header("Location: index.php?message=" . $message);

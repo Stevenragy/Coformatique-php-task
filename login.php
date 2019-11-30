@@ -23,6 +23,7 @@ if (isset($_POST['submit'])) {
         if (password_verify($pwdEntered, $data['password'])) {
             $_SESSION['id'] = $data['id'];
             $_SESSION['email'] = $data['email'];
+            $_SESSION['full_name'] = $data['full_name'];
             header("Location: index.php");
             exit;
         } else {

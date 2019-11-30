@@ -4,6 +4,7 @@ if (!(isset($_SESSION['email']) && isset($_SESSION['id']))) {
     header("Location: login.php");
 }
 require('header.php');
+
 ?>
 
 
@@ -16,7 +17,7 @@ require('header.php');
     <br>
     <div class="row justify-content-center">
         <div class="col-md-6">
-
+            <h1> Hello <?php echo $_SESSION['full_name']; ?></h1>
         </div>
     </div>
 </div>
