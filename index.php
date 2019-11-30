@@ -33,7 +33,7 @@ if (isset($_POST['update'])) {
         echo mysqli_connect_error(); //for debugging
         exit;
     }
-    $queryReplyAdd = mysqli_query($conn, "INSERT INTO `replies` (`id`, `message_id`, `reply`, `createdOn`) VALUES (NULL, '.$messageId.', '.$replyText.', current_timestamp())");
+    $queryReplyAdd = mysqli_query($conn, "INSERT INTO `replies` (`id`, `message_id`, `reply`, `createdOn`) VALUES (NULL, '$messageId', '$replyText', current_timestamp())");
 }
 $messageDisplay = "";
 $error = "";
@@ -158,7 +158,7 @@ require('header.php');
                         <form method="post">
                         <input type="hidden" name="idHid1" id="idHid1" value="' . $data['id'] . '" />
 
-                        <button type="submit" id="delete" name="delete" class="btn btn-danger btn-sm">Delete</button>
+                        <button type="submit" id="delete" name="delete" class="mt-1 mb-1 btn btn-danger btn-sm">Delete</button>
                         </form>
                     </div>
                 </div>
