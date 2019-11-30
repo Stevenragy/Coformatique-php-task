@@ -19,6 +19,21 @@ if (isset($_POST['update'])) {
         exit;
     }
     $queryUpdate = mysqli_query($conn, "DELETE FROM `message` WHERE id='" . $_POST['idHid1'] . "'");
+} else if (isset($_POST['reply'])) {
+    $conn = mysqli_connect("localhost", "root", "", "coform");
+    if (!$conn) {
+        echo mysqli_connect_error(); //for debugging
+        exit;
+    }
+    $messageId = $_POST['idHid2'];
+    $replyText = mysqli_escape_string($conn, $_POST['replyTextarea']);
+
+    $conn = mysqli_connect("localhost", "root", "", "coform");
+    if (!$conn) {
+        echo mysqli_connect_error(); //for debugging
+        exit;
+    }
+    $queryReplyAdd = mysqli_query($conn, "INSERT INTO `replies` (`id`, `message_id`, `reply`, `createdOn`) VALUES (NULL, '.$messageId.', '.$replyText.', current_timestamp())");
 }
 $messageDisplay = "";
 $error = "";
@@ -99,9 +114,13 @@ require('header.php');
                         echo mysqli_connect_error(); //for debugging
                         exit;
                     }
+
                     $query = mysqli_query($conn, "SELECT * FROM `message` WHERE user_id = '" . $_SESSION['id'] . "'");
                     if (mysqli_num_rows($query) > 0) {
                         while ($data = mysqli_fetch_assoc($query)) {
+                            $queryReply = mysqli_query($conn, "SELECT * FROM `replies` WHERE message_id =  '" . $data['id'] . "'");
+                            $dataReply = mysqli_fetch_assoc($queryReply);
+
                             echo '
             <div class="message shadow p-3 mb-5 bg-white rounded col-lg-6 m-3">
                 <div class="user"><small class="time text-muted">' . $data['createdOn'] . '</small></div>
@@ -143,17 +162,21 @@ require('header.php');
                         </form>
                     </div>
                 </div>
+                
                 <div class="replies m-3">
-                    <div class="userMessage">Here is some message for my web page messages i try it for now </div>
-                    <small class="time text-muted">2019-11-30</small>
+                    <div class="userMessage">' . $dataReply['reply'] . ' </div>
+                    <small class="time text-muted">' . $dataReply['createdOn'] . '</small>
                     <a class="text-secondary" data-toggle="collapse" href="#txtArea' . $data['id'] . '" role="button" aria-expanded="false" aria-controls="txtArea' . $data['id'] . '">Add reply</a>
                     <div class="collapse" id="txtArea' . $data['id'] . '">
                         <div class="card card-body">
-                            <div class="form-group purple-border">
+                        <form method="post">    
+                        <div class="form-group purple-border">
+                                <input type="hidden" name="idHid2" id="idHid2" value="' . $data['id'] . '" />
                                 <label for="replyTextarea' . $data['id'] . '">Type Here</label>
-                                <textarea class="form-control" id="replyTextarea' . $data['id'] . '" rows="3" value=""></textarea>
+                                <textarea class="form-control" name="replyTextarea" id="replyTextarea' . $data['id'] . '" rows="3" value=""></textarea>
                             </div>
-                            <button class="btn btn-primary">Add</button>
+                            <button type="submit" name="reply" id="reply" class="btn btn-primary">Add</button>
+                            </form>
                         </div>
                     </div>
                 </div>
