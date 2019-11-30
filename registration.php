@@ -1,5 +1,11 @@
-<?php require('header.php') ?>
 <?php
+session_start();
+
+require('header.php') ?>
+<?php
+if (isset($_SESSION['email']) && isset($_SESSION['id'])) {
+    header("Location: index.php");
+}
 $error_array = array();
 if (isset($_GET)) {
     if (isset($_GET['errors'])) {
@@ -9,6 +15,12 @@ if (isset($_GET)) {
 ?>
 
 <div class="container">
+    <br>
+
+    <?php if (isset($_GET)) {
+        if (isset($_GET['regFailed']))
+            echo '<div class="alert alert-danger" role="alert">' . $_GET['regFailed'] . '</div>'; //Alert if the registration failed
+    } ?>
     <div class="row justify-content-center shadow p-3 mb-5 bg-white rounded">
         <div class=" col-md-6 col-lg-9">
             <h1>Register</h1>

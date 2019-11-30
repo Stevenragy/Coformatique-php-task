@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (isset($_POST['submit'])) {
 
 
@@ -43,6 +44,7 @@ if (isset($_POST['submit'])) {
     @$username = mysqli_escape_string($conn, $_POST['username']);
     @$email = mysqli_escape_string($conn, $_POST['email']);
     @$gender = $_POST['radio'];
+    //hashing password
     @$password = password_hash(mysqli_escape_string($conn, $_POST['password']), PASSWORD_DEFAULT);
     @$phoneNumber = mysqli_escape_string($conn, $_POST['phoneNumber']);
     if (!(empty($fullName . $username . $email . $gender . $password . $phoneNumber))) {
@@ -53,10 +55,21 @@ if (isset($_POST['submit'])) {
 
 
     if (mysqli_query($conn, $query)) {
-        echo "You have been registered successfully";
+        $result = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email'");
+
+        if (mysqli_num_rows($result) > 0) {
+            $data = mysqli_fetch_array($result);
+            $_SESSION['id'] = $data['id'];
+            $_SESSION['email'] = $data['email'];
+            $message = "You have been registered successfully";
+
+            header("Location: index.php?message=" . $message);
+            exit;
+        }
     } else {
-        echo "sss";
-        mysqli_error($conn);
+        session_destroy();
+        $error = "Register failed";
+        header("Location: registration.php?regFailed=" .  $error);
     }
 
     mysqli_close($conn);

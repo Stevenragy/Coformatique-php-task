@@ -1,4 +1,24 @@
 <?php session_start(); ?>
 <?php
-echo $_SESSION['id'];
+if (!(isset($_SESSION['email']) && isset($_SESSION['id']))) {
+    header("Location: login.php");
+}
+require('header.php');
 ?>
+
+
+<div class="container">
+    <br>
+    <?php if (isset($_GET)) {
+        if (isset($_GET['message']))
+            echo '<div class="alert alert-success" role="alert">' . $_GET['message'] . '</div>'; //Alert if the registration failed
+    } ?>
+    <br>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+        </div>
+    </div>
+</div>
+
+<?php require('footer.php') ?>
