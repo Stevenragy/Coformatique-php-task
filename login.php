@@ -1,13 +1,13 @@
 <?php session_start();
 
-if (isset($_SESSION['email']) && isset($_SESSION['id'])) {
+if (isset($_SESSION['email']) && isset($_SESSION['id'])) { //check if the user registered or not
     header("Location: index.php");
 }
 require('header.php');
 ?>
 <?php
 $error = "";
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {   //login button
 
     $conn = mysqli_connect("localhost", "root", "", "coform");
     if (!$conn) {
@@ -57,7 +57,7 @@ if (isset($_POST['submit'])) {
                     <label class="form-check-label" for="exampleCheck1">Remember me</label>
                     <!--not functional yet -->
                 </div>
-                <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                <button type="submit" class="btn btn-primary" name="submit">Login</button>
             </form>
             <a href="registration.php">Don't have an account?</a>
         </div>

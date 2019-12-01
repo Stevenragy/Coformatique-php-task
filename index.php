@@ -3,6 +3,7 @@
 if (!(isset($_SESSION['email']) && isset($_SESSION['id']))) {
     header("Location: login.php");
 }
+//--------------------------->save changes button
 if (isset($_POST['update'])) {
     $conn = mysqli_connect("localhost", "root", "", "coform");
     if (!$conn) {
@@ -12,14 +13,18 @@ if (isset($_POST['update'])) {
     $text = mysqli_escape_string($conn, $_POST['textArea']);
     $queryUpdate = mysqli_query($conn, "UPDATE `message` SET `message`=' $text' WHERE 
         id = '" . $_POST['idHid'] . "'");
-} else if (isset($_POST['delete'])) {
+}
+//------------------------------------------->Delete Button 
+else if (isset($_POST['delete'])) {
     $conn = mysqli_connect("localhost", "root", "", "coform");
     if (!$conn) {
         echo mysqli_connect_error(); //for debugging
         exit;
     }
     $queryUpdate = mysqli_query($conn, "DELETE FROM `message` WHERE id='" . $_POST['idHid1'] . "'");
-} else if (isset($_POST['reply'])) {
+}
+//------------------------------------->Add Reply button
+else if (isset($_POST['reply'])) {
     $conn = mysqli_connect("localhost", "root", "", "coform");
     if (!$conn) {
         echo mysqli_connect_error(); //for debugging
@@ -35,6 +40,7 @@ if (isset($_POST['update'])) {
     }
     $queryReplyAdd = mysqli_query($conn, "INSERT INTO `replies` (`id`, `message_id`, `reply`, `createdOn`) VALUES (NULL, '$messageId', '$replyText', current_timestamp())");
 }
+//--------------------------------------------->Add Message Button
 $messageDisplay = "";
 $error = "";
 if (isset($_POST['addMessage'])) {
@@ -57,9 +63,7 @@ if (isset($_POST['addMessage'])) {
         $error = "Message is empty";
     }
 }
-
 require('header.php');
-
 ?>
 
 
@@ -67,7 +71,7 @@ require('header.php');
     <br>
     <?php if (isset($_GET)) {
         if (isset($_GET['message']))
-            echo '<div class="alert alert-success" role="alert">' . $_GET['message'] . '</div>'; //Alert if the registration failed
+            echo '<div class="alert alert-success" role="alert">' . $_GET['message'] . '</div>'; //Alert in registration success
     }
     ?>
     <br>
@@ -82,14 +86,13 @@ require('header.php');
             <p>
                 <?php if (isset($_POST)) {
                     if ($messageDisplay != "")
-                        echo '<div class="alert alert-success" role="alert">' . $messageDisplay . '</div>'; //Alert if the registration failed
+                        echo '<div class="alert alert-success" role="alert">' . $messageDisplay . '</div>'; //Alert if the message added successfully
                 } ?>
                 <a class=" btn btn-primary" data-toggle="collapse" href="#txtArea" role="button" aria-expanded="false" aria-controls="txtArea">
                     Add Message
                 </a>
             </p>
             <div class="collapse" id="txtArea">
-
                 <div class="card card-body">
                     <form method="post">
                         <div class="form-group purple-border">
@@ -103,7 +106,6 @@ require('header.php');
         </div>
     </div>
     <br>
-
     <div class="row justify-content-start">
         <div class="col-lg-12">
             <div class="row justify-content-center userMessages">
@@ -114,21 +116,20 @@ require('header.php');
                         echo mysqli_connect_error(); //for debugging
                         exit;
                     }
-
                     $query = mysqli_query($conn, "SELECT * FROM `message` WHERE user_id = '" . $_SESSION['id'] . "'");
                     if (mysqli_num_rows($query) > 0) {
                         while ($data = mysqli_fetch_assoc($query)) {
                             $queryReply = mysqli_query($conn, "SELECT * FROM `replies` WHERE message_id =  '" . $data['id'] . "'");
-                            $dataReply = mysqli_fetch_assoc($queryReply);
+                            // $dataReply = mysqli_fetch_assoc($queryReply);
 
                             echo '
             <div class="message shadow p-3 mb-5 bg-white rounded col-lg-6 m-3">
-                <div class="user"><small class="time text-muted">' . $data['createdOn'] . '</small></div>
-                <div class="userMessage">' . $data['message'] . '
+                <div><small class="time text-muted">' . $data['createdOn'] . '</small></div>
+                <div>' . $data['message'] . '
                 </div>
                 <div class="border-bottom">
                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#messageUpdate' . $data['id'] . '">
-                        Update
+                        Update 
                     </button>
 
                     <!-- Modal -->
@@ -162,10 +163,16 @@ require('header.php');
                         </form>
                     </div>
                 </div>
-                
                 <div class="replies m-3">
-                    <div class="userMessage">' . $dataReply['reply'] . ' </div>
-                    <small class="time text-muted">' . $dataReply['createdOn'] . '</small>
+                ';
+                    if (mysqli_num_rows($queryReply) > 0) {
+                        while ($dataReply = mysqli_fetch_assoc($queryReply)) {
+                                echo '
+                                    <div class="userMessage">' . $dataReply['reply'] . ' </div>
+                                    <small class="time text-muted">' . $dataReply['createdOn'] . '</small>';
+                                }
+                            }
+                            echo '
                     <a class="text-secondary" data-toggle="collapse" href="#txtArea' . $data['id'] . '" role="button" aria-expanded="false" aria-controls="txtArea' . $data['id'] . '">Add reply</a>
                     <div class="collapse" id="txtArea' . $data['id'] . '">
                         <div class="card card-body">
